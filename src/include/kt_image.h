@@ -18,23 +18,31 @@ public:
     using PathType = std::filesystem::path;
     using FileType = std::ifstream;
     ImageLoader(std::filesystem::path filePath) 
-        :   m_FilePath(filePath), m_FileImage(filePath, std::ios::binary) {
+        :   m_FilePath(filePath), m_FileImage(filePath, std::ios::binary), m_Data(nullptr) {
         if (!this->m_FileImage.is_open()) {
             std::cout << "-----------------------------\n";
             std::cout << "Error: Could not open file.\n";
             std::cout << "-----------------------------\n";
+
         }
         else {
             std::cout << "-----------------------------\n";
             std::cout << "Succes: Could open file succesfully.\n";
             std::cout << "-----------------------------\n";
+
+            this->m_Data = new (std::nothrow) char[getFileSize()];
         }
 
+        
 #ifdef _DEBUG
         printSomeStuf();
         std::cout << std::dec << "\nFile size: " << getFileSize() << " bytes\n";
 #endif
-    }   
+    }  
+
+    ~ImageLoader() {
+        delete[] this->m_Data;
+    }
 
     auto getFilePath() const -> const std::filesystem::path& {
         return m_FilePath;
@@ -69,7 +77,8 @@ public:
 private:
     PathType m_FilePath{};
     FileType m_FileImage{};
-    SizeType fileSize{};
+    char* m_Data{};
+
 
 };  // END ImageLoader class
 
