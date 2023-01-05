@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iomanip>
 #include <cstdint>
+#include <utility>
 
 // just make simple image loader to load
 // the image in the repo for now
@@ -18,25 +19,28 @@ public:
     using PathType = std::filesystem::path;
     using FileType = std::ifstream;
     ImageLoader(std::filesystem::path filePath) 
-        :   m_FilePath(filePath), m_FileImage(filePath, std::ios::binary), m_Data(nullptr) {
-        if (!this->m_FileImage.is_open()) {
-            std::cout << "-----------------------------\n";
-            std::cout << "Error: Could not open file.\n";
-            std::cout << "-----------------------------\n";
+        :   m_FilePath(filePath), m_Data(nullptr) {
+        auto temp = getData(filePath);
+        this->m_Data = temp.first;
+        this->m_FileSize = temp.second;
+
+        if (!this->m_Data) {
+            std::cerr << "-----------------------------\n";
+            std::cerr << "Error: Could not open file.\n";
+            std::cerr << "-----------------------------\n";
 
         }
         else {
-            std::cout << "-----------------------------\n";
-            std::cout << "Succes: Could open file succesfully.\n";
-            std::cout << "-----------------------------\n";
+            std::cerr << "-----------------------------\n";
+            std::cerr << "Succes: Could open file succesfully.\n";
+            std::cerr << "-----------------------------\n";
 
-            this->m_Data = new (std::nothrow) char[getFileSize()];
         }
 
         
 #ifdef _DEBUG
         printSomeStuf();
-        std::cout << std::dec << "\nFile size: " << getFileSize() << " bytes\n";
+        
 #endif
     }  
 
@@ -51,32 +55,56 @@ public:
 #ifdef _DEBUG
     auto printSomeStuf() -> void {  
         std::cout << std::endl;
-        for (int i = 0; i < 10; ++i) {
-            unsigned char byte;
-            this->m_FileImage >> byte;
-            std::cout << std::uppercase << std::hex << static_cast<int>(byte) << ' ';
+        auto temp = this->m_Data;
+        for (SizeType position = 0; position < 10; ++position) {
+            std::cout << std::uppercase << std::hex << static_cast<int>(*(temp + position)) << ' ';
+           
         }
     }
 #endif
 
-    auto getFileSize() -> SizeType {
+
+
+private:
+    static auto getFileSize(FileType& file) -> SizeType {
         // backup previous position
-        FileType::pos_type previousPosition = this->m_FileImage.tellg();
+        FileType::pos_type previousPosition = file.tellg();
 
         // set read position to end of file and infer size
-        this->m_FileImage.seekg(0, std::ios::end);
-        SizeType result = this->m_FileImage.tellg();
+        file.seekg(0, std::ios::end);
+        SizeType result = file.tellg();
 
         // restore read position to the previous position
-        this->m_FileImage.seekg(previousPosition);
+        file.seekg(previousPosition);
 
         return result;
     }
 
+    std::pair<char*, SizeType> getData(std::filesystem::path filePath) {
+        std::pair<char*, SizeType> result = std::make_pair(nullptr, 0);
+        FileType temp(filePath, std::ios::binary);
+        try {
+            result.second = getFileSize(temp);
+            result.first = new char[result.second];
+        }
+        catch (...) {
+            std::cerr << "Could not allocate memory for getData()...\n";
+        }
 
-private:
+        if (result.first) {
+            for (SizeType index = 0; index < result.second; ++index) {
+                temp.seekg(index);
+                unsigned char byte = temp.peek();
+                *(result.first + index) = byte;
+
+            }
+        }
+
+        return result;
+    }
+
     PathType m_FilePath{};
-    FileType m_FileImage{};
+    SizeType m_FileSize{};
     char* m_Data{};
 
 
