@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\zanet\Desktop\kate_image_loader\kt_image\src\build\CMakeFiles\fd2aaa6a167d1195517a4a03b55c0345\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{FE5DDEB4-1C93-334A-ABDA-7B1105F47AF4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

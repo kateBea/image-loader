@@ -18,8 +18,10 @@ public:
     using SizeType = std::size_t;
     using PathType = std::filesystem::path;
     using FileType = std::ifstream;
+    using OutFileType = std::ofstream;
+    
     ImageLoader(std::filesystem::path filePath) 
-        :   m_FilePath(filePath), m_Data(nullptr) {
+        :   m_FilePath(filePath), m_FileSize(), m_Data(nullptr) {
         auto temp = getData(filePath);
         this->m_Data = temp.first;
         this->m_FileSize = temp.second;
@@ -52,12 +54,23 @@ public:
         return m_FilePath;
     }
 
+    auto outFileData(std::filesystem::path outputFilePath) -> void {
+        // creates the file if it doesnt exist, if
+        // it does, it empties it first
+        OutFileType file(outputFilePath, std::ios::binary | std::ios::trunc);
+
+        if (file.is_open()) {
+            for (SizeType it = 0; it < this->m_FileSize; ++it)
+                file << this->m_Data[it];
+        }
+    }
+
 #ifdef _DEBUG
     auto printSomeStuf() -> void {  
         std::cout << std::endl;
-        auto temp = this->m_Data;
         for (SizeType position = 0; position < 10; ++position) {
-            std::cout << std::uppercase << std::hex << static_cast<int>(*(temp + position)) << ' ';
+            unsigned short out = this->m_Data[position];
+            std::cout << std::uppercase << std::hex << out << ' ';
            
         }
     }
@@ -80,12 +93,12 @@ private:
         return result;
     }
 
-    std::pair<char*, SizeType> getData(std::filesystem::path filePath) {
-        std::pair<char*, SizeType> result = std::make_pair(nullptr, 0);
+    std::pair<unsigned char*, SizeType> getData(std::filesystem::path filePath) {
+        std::pair<unsigned char*, SizeType> result = std::make_pair(nullptr, 0);
         FileType temp(filePath, std::ios::binary);
         try {
             result.second = getFileSize(temp);
-            result.first = new char[result.second];
+            result.first = new unsigned char[result.second];
         }
         catch (...) {
             std::cerr << "Could not allocate memory for getData()...\n";
@@ -95,7 +108,7 @@ private:
             for (SizeType index = 0; index < result.second; ++index) {
                 temp.seekg(index);
                 unsigned char byte = temp.peek();
-                *(result.first + index) = byte;
+                result.first[index] = byte;
 
             }
         }
@@ -105,7 +118,7 @@ private:
 
     PathType m_FilePath{};
     SizeType m_FileSize{};
-    char* m_Data{};
+    unsigned char* m_Data{};
 
 
 };  // END ImageLoader class
