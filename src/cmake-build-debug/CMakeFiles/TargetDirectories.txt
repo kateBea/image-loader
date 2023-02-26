@@ -1,0 +1,3 @@
+C:/Users/zanet/Desktop/kate_image_loader/kt_image/src/cmake-build-debug/CMakeFiles/main.dir
+C:/Users/zanet/Desktop/kate_image_loader/kt_image/src/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/zanet/Desktop/kate_image_loader/kt_image/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir
