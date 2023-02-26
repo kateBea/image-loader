@@ -14,10 +14,10 @@
 // Extensions
 #include "tools.h"
 
-// just make simple image loader to load
-// the image in the repo for now
-// i.e. support for .png files
-namespace kate {
+// just simple image loader to
+// support for .png files
+KATE_NAMESPACE_BEGIN
+
 class ImageLoader {
 public:
     using SizeType = std::size_t;
@@ -169,6 +169,6 @@ private:
 
 };  // END ImageLoader class
 
-} // END kate NAMESPACE
+KATE_NAMESPACE_END // END kate NAMESPACE
 
 #endif
