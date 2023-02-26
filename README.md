@@ -1,2 +1,2 @@
 # Kate Image Loader
-Simple image loader that can be used to load images for textures in OpenGL
+Small tool for loading and manipulating PNG images. Build using C++ standard library features
