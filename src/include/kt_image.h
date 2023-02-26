@@ -1,6 +1,7 @@
 #ifndef KT_IMAGE_HH
 #define KT_IMAGE_HH
 
+// C++ STD Library
 #include <filesystem>
 #include <cstdio>
 #include <iostream>
@@ -8,6 +9,10 @@
 #include <iomanip>
 #include <cstdint>
 #include <utility>
+#include <string_view>
+
+// Extensions
+#include "tools.h"
 
 // just make simple image loader to load
 // the image in the repo for now
@@ -20,28 +25,28 @@ public:
     using FileType = std::ifstream;
     using OutFileType = std::ofstream;
     
-    ImageLoader(std::filesystem::path filePath) 
+    explicit ImageLoader(const std::filesystem::path& filePath)
         :   m_FilePath(filePath), m_FileSize(), m_Data(nullptr) {
         auto temp = getData(filePath);
         this->m_Data = temp.first;
         this->m_FileSize = temp.second;
 
         if (!this->m_Data) {
-            std::cerr << "-----------------------------\n";
-            std::cerr << "Error: Could not open file.\n";
-            std::cerr << "-----------------------------\n";
+            std::cerr << "--------------------------\n";
+            std::cerr << "Error: Could not open file\n";
+            std::cerr << "--------------------------\n";
 
         }
         else {
-            std::cerr << "-----------------------------\n";
-            std::cerr << "Succes: Could open file succesfully.\n";
-            std::cerr << "-----------------------------\n";
+            std::cerr << "-------------------------------------\n";
+            std::cerr << "Success: Could open file successfully\n";
+            std::cerr << "-------------------------------------\n";
 
         }
 
         
 #ifdef _DEBUG
-        printSomeStuf();
+        printSomeStuff();
         
 #endif
     }  
@@ -50,12 +55,13 @@ public:
         delete[] this->m_Data;
     }
 
+    NODISCARD
     auto getFilePath() const -> const std::filesystem::path& {
         return m_FilePath;
     }
 
-    auto outFileData(std::filesystem::path outputFilePath) -> void {
-        // creates the file if it doesnt exist, if
+    auto outFileData(const std::filesystem::path& outputFilePath) -> void {
+        // creates the file if it doesn't exist, if
         // it does, it empties it first
         OutFileType file(outputFilePath, std::ios::binary | std::ios::trunc);
 
@@ -66,7 +72,7 @@ public:
     }
 
 #ifdef _DEBUG
-    auto printSomeStuf() -> void {  
+    auto printSomeStuff() -> void {
         std::cout << std::endl;
         for (SizeType position = 0; position < 10; ++position) {
             unsigned short out = this->m_Data[position];
@@ -93,7 +99,7 @@ private:
         return result;
     }
 
-    std::pair<unsigned char*, SizeType> getData(std::filesystem::path filePath) {
+    static auto getData(const std::filesystem::path& filePath) -> std::pair<unsigned char*, SizeType> {
         std::pair<unsigned char*, SizeType> result = std::make_pair(nullptr, 0);
         FileType temp(filePath, std::ios::binary);
         try {
@@ -104,7 +110,7 @@ private:
             std::cerr << "Could not allocate memory for getData()...\n";
         }
 
-        if (result.first) {
+        if (result.first != nullptr) {
             for (SizeType index = 0; index < result.second; ++index) {
                 temp.seekg(index);
                 unsigned char byte = temp.peek();
