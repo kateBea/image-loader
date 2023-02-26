@@ -5,7 +5,7 @@
 #ifndef IMAGE_LOADER_TOOLS_H
 #define IMAGE_LOADER_TOOLS_H
 
-#define NODISCARD [[nodiscard]]
+#define KATE_NODISCARD [[nodiscard]]
 
 #define KATE_NAMESPACE_BEGIN    namespace kate {
 #define KATE_NAMESPACE_END      }

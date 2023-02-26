@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <utility>
 #include <string_view>
+#include <string>
 
 // Extensions
 #include "tools.h"
@@ -52,7 +53,6 @@ public:
         
 #ifdef _DEBUG
         printSomeStuff();
-        
 #endif
     }  
 
@@ -69,7 +69,7 @@ public:
      *
      * @return Path to image loaded
      * */
-    NODISCARD
+    KATE_NODISCARD
     auto getFilePath() const -> const PathType& {
         return m_FilePath;
     }
@@ -112,6 +112,7 @@ private:
      * @param file File to process
      * @return size of the file
      * */
+    KATE_NODISCARD
     static auto getFileSize(FileType& file) -> SizeType {
         // backup previous position
         FileType::pos_type previousPosition = file.tellg();
