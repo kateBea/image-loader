@@ -24,8 +24,13 @@ public:
     using PathType = std::filesystem::path;
     using FileType = std::ifstream;
     using OutFileType = std::ofstream;
-    
-    explicit ImageLoader(const std::filesystem::path& filePath)
+
+    /**
+     * Creates an image loader out of the passed directory
+     *
+     *@param filePath Path to the image source
+     * */
+    explicit ImageLoader(const PathType& filePath)
         :   m_FilePath(filePath), m_FileSize(), m_Data(nullptr) {
         auto temp = getData(filePath);
         this->m_Data = temp.first;
@@ -51,16 +56,31 @@ public:
 #endif
     }  
 
+    /**
+     * Destroys the Image Loader
+     *
+     * */
     ~ImageLoader() {
         delete[] this->m_Data;
     }
 
+    /**
+     * Returns the path of the image source loaded
+     *
+     * @return Path to image loaded
+     * */
     NODISCARD
-    auto getFilePath() const -> const std::filesystem::path& {
+    auto getFilePath() const -> const PathType& {
         return m_FilePath;
     }
 
-    auto outFileData(const std::filesystem::path& outputFilePath) -> void {
+    /**
+     * Writes the contents of the loaded image to the file
+     * indicated by outputFilePath
+     *
+     * @param outputFilePath Path to out file
+     * */
+    auto outFileData(const PathType& outputFilePath) -> void {
         // creates the file if it doesn't exist, if
         // it does, it empties it first
         OutFileType file(outputFilePath, std::ios::binary | std::ios::trunc);
@@ -72,19 +92,26 @@ public:
     }
 
 #ifdef _DEBUG
+    /**
+     * Prints contents of the loaded file to standard output
+     *
+     * */
     auto printSomeStuff() -> void {
-        std::cout << std::endl;
-        for (SizeType position = 0; position < 10; ++position) {
-            unsigned short out = this->m_Data[position];
-            std::cout << std::uppercase << std::hex << out << ' ';
-           
-        }
+        for (SizeType position = 0; position < 10; ++position)
+            std::cout << std::uppercase << std::hex <<
+                static_cast<std::uint32_t>(this->m_Data[position]) << ' ';
     }
 #endif
 
 
 
 private:
+    /**
+     * Returns the size in bytes of the file passed as parameter
+     *
+     * @param file File to process
+     * @return size of the file
+     * */
     static auto getFileSize(FileType& file) -> SizeType {
         // backup previous position
         FileType::pos_type previousPosition = file.tellg();
@@ -99,7 +126,15 @@ private:
         return result;
     }
 
-    static auto getData(const std::filesystem::path& filePath) -> std::pair<unsigned char*, SizeType> {
+    /**
+     * Returns a std::pair containing the bytes of the file with
+     * filePath source path and its size
+     *
+     * @param filePath File source path
+     * @return and std::pair with contents of the file as bytes and its size
+     *
+     * */
+    static auto getData(const PathType& filePath) -> std::pair<unsigned char*, SizeType> {
         std::pair<unsigned char*, SizeType> result = std::make_pair(nullptr, 0);
         FileType temp(filePath, std::ios::binary);
         try {
@@ -122,8 +157,13 @@ private:
         return result;
     }
 
+    // File source path
     PathType m_FilePath{};
+
+    // File size in bytes
     SizeType m_FileSize{};
+
+    // Contents of the file
     unsigned char* m_Data{};
 
 

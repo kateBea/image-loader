@@ -1,6 +1,7 @@
-#include <kt_image.h>
 #include <iostream>
 #include <string>
+
+#include <kt_image.h>
 
 int main(int, char**) {
     std::string dir{};
