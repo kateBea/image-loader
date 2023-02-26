@@ -1,3 +1,0 @@
-C:/Users/zanet/Desktop/kate_image_loader/kt_image/src/build/CMakeFiles/main.dir
-C:/Users/zanet/Desktop/kate_image_loader/kt_image/src/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/zanet/Desktop/kate_image_loader/kt_image/src/build/CMakeFiles/ZERO_CHECK.dir
