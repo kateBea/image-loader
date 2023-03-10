@@ -138,20 +138,23 @@ private:
     static auto getData(const PathType& filePath) -> std::pair<unsigned char*, SizeType> {
         std::pair<unsigned char*, SizeType> result = std::make_pair(nullptr, 0);
         FileType temp(filePath, std::ios::binary);
-        try {
-            result.second = getFileSize(temp);
-            result.first = new unsigned char[result.second];
-        }
-        catch (...) {
-            std::cerr << "Could not allocate memory for getData()...\n";
-        }
 
-        if (result.first != nullptr) {
-            for (SizeType index = 0; index < result.second; ++index) {
-                temp.seekg(index);
-                unsigned char byte = temp.peek();
-                result.first[index] = byte;
+        if (temp.is_open()) {
+            try {
+                result.second = getFileSize(temp);
+                result.first = new unsigned char[result.second];
+            }
+            catch (...) {
+                std::cerr << "Could not allocate memory for getData()...\n";
+            }
 
+            if (result.first != nullptr) {
+                for (SizeType index = 0; index < result.second; ++index) {
+                    temp.seekg(index);
+                    unsigned char byte = temp.peek();
+                    result.first[index] = byte;
+
+                }
             }
         }
 
